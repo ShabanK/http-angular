@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http"
+import {Observable} from "rxjs"
+import {pluck} from "rxjs/operators"
+import {WikipediaResponse} from "./wikipediaResponse"
 
 @Injectable()
 export class WikipediaService {
 
   constructor(private http:HttpClient) { }
   
-  search(term:string){
-    return this.http.get(`https://en.wikipedia.org/w/api.php?`,{
+  public search(term:string){
+    return this.http.get<WikipediaResponse>(`https://en.wikipedia.org/w/api.php?`,{
       params: {
         action: "query",
         format:"json",
@@ -17,6 +20,8 @@ export class WikipediaService {
         origin: "*"
       }
     }
+    ).pipe(
+      pluck("query","search")
     );
   }
 }
